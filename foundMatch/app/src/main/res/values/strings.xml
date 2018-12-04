@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Found &amp; Unlock</string>
+    <string name="title_home">Home</string>
+    <string name="title_viewer">My Keys</string>
+    <string name="title_activity_home">HomeActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="greeting">Click to begin matching...</string>
+    <string name="direction">Begin Search</string>
+    <string name="noKeys">No Keys are Stored</string>
+    <string name="search_text">Searching...</string>
+    <string name="begin_capture">Take an Image</string>
+    <string name="gallery_capture">Upload an Image</string>
+    <string name="mykeys_text">Keys Viewer</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="image_key">Image of Key</string>
+    <string name="match_text">Match Found</string>
+    <string name="match_text2">Possible Match Found</string>
+    <string name="close_match">Closest Match</string>
+    <string name="not_key">Not your key?</string>
+    <string name="nomatch_text">No match was found...</string>
+    <string name="add_text">Add Key</string>
+    <string name="name_title">Name: </string>
+    <string name="desc_title">Description: </string>
+    <string name="add_text_info">Add</string>
+    <string name="image_captured">Image taken by camera...</string>
+
+</resources>

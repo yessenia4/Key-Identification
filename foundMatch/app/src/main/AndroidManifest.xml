@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.rodriguez.foundmatch">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera.front" />
+    <uses-feature android:name="android.hardware.camera.front.autofocus" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher3"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round3"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".Activities.MainActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Activities.ExtractFeatActivity" />
+        <activity android:name=".Activities.MyKeysActivity" />
+        <activity android:name=".camera_cv.CameraPreview" />
+        <activity android:name=".Activities.MatchActivity" />
+        <activity android:name=".Activities.MatchActivity2" />
+        <activity android:name=".Activities.NoMatchActivity" />
+        <activity android:name=".Activities.AddActivity" />
+        <activity android:name=".Activities.SearchActivity"></activity>
+    </application>
+
+</manifest>
