@@ -16,10 +16,10 @@
     <string name="edit">Edit</string>
     <string name="image_key">Image of Key</string>
     <string name="match_text">Match Found</string>
-    <string name="match_text2">Possible Match Found</string>
+    <string name="match_text2">Possible Matches Found</string>
     <string name="close_match">Closest Match</string>
     <string name="not_key">Not your key?</string>
-    <string name="nomatch_text">No match was found...</string>
+    <string name="nomatch_text">No Possible Match Found</string>
     <string name="add_text">Add Key</string>
     <string name="name_title">Name: </string>
     <string name="desc_title">Description: </string>

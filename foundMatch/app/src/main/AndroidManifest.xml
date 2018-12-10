@@ -34,7 +34,7 @@
         <activity android:name=".Activities.MatchActivity2" />
         <activity android:name=".Activities.NoMatchActivity" />
         <activity android:name=".Activities.AddActivity" />
-        <activity android:name=".Activities.SearchActivity"></activity>
+        <activity android:name=".Activities.SearchActivity" />
     </application>
 
 </manifest>

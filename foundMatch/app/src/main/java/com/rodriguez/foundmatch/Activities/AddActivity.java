@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.rodriguez.foundmatch.DatabaseManagment.MyDBHandler;
 import com.rodriguez.foundmatch.Keys.KeyHelper;
 import com.rodriguez.foundmatch.Keys.KeyInformation;
+import com.rodriguez.foundmatch.Keys.MatchesHelper;
 import com.rodriguez.foundmatch.R;
 import com.rodriguez.foundmatch.camera_cv.MatHelper;
 
@@ -63,7 +64,8 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         else{
             ArrayList<KeyInformation> dbKeys = currentDB.loadHandler();
             int id = dbKeys.size();
-            keyObj = (KeyInformation) getIntent().getSerializableExtra("key object");
+
+            keyObj = KeyHelper.getInstanceS().getKey();
             keyObj.setKeyID(id+1);
             keyObj.setKeyImage(bm);
             keyObj.setKeyName(nameEntered);
@@ -73,6 +75,8 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             Toast.makeText(getApplicationContext(), "Key was added...", Toast.LENGTH_SHORT).show();
 
             //begin again
+            //clear match set
+            MatchesHelper.getMatchInstance().emptyArray();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

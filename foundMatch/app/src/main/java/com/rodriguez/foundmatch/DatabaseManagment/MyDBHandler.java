@@ -106,7 +106,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         byte[] bytearray = bb.array();
         values.put(COLUMN_Feat,bytearray);
 
-        /*Double[] features = key.getFeatures();
+        /*Double[] features = key.getCurrentFeatures();
         String featData = new String();
         for(int i=0; i<features.length; i++){
             featData += features[i].toString() + ",";
@@ -120,7 +120,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     public boolean deleteHandler(int keyID) {
         boolean result = false;
-        String query = "SELECT * FROM " + TABLE_NAME + "WHERE " + COLUMN_ID + "=?" + keyID + ";";
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_ID + "=" + keyID + ";";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query,null);
         KeyInformation key = new KeyInformation();
@@ -156,7 +156,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         byte[] bytearray = bb.array();
         args.put(COLUMN_Feat,bytearray);
 
-        /*Double[] features = newKey.getFeatures();
+        /*Double[] features = newKey.getCurrentFeatures();
         String featData = new String();
         for(int i=0; i<features.length; i++){
             featData += features[i].toString() + ",";

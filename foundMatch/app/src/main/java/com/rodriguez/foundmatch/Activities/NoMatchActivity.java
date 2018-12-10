@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.rodriguez.foundmatch.Keys.KeyHelper;
 import com.rodriguez.foundmatch.Keys.KeyInformation;
+import com.rodriguez.foundmatch.Keys.MatchesHelper;
 import com.rodriguez.foundmatch.R;
 import com.rodriguez.foundmatch.camera_cv.MatHelper;
 
@@ -19,16 +20,11 @@ import org.opencv.core.Mat;
 public class NoMatchActivity extends AppCompatActivity implements View.OnClickListener {
     ImageView image;
     Button add;
-    KeyInformation keyObj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nomatch);
-
-        //get features to pass to add if needed
-        keyObj = KeyHelper.getInstanceS().getKey();
-
 
         // convert to bitmap:
         Mat mat = MatHelper.getInstance().getMat();
@@ -47,7 +43,6 @@ public class NoMatchActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         Intent addIntent = new Intent(this, AddActivity.class);
-        //addIntent.putExtra("key object", keyObj);
         startActivity(addIntent);
     }
 
@@ -56,6 +51,8 @@ public class NoMatchActivity extends AppCompatActivity implements View.OnClickLi
         super.onBackPressed();
 
         //begin again
+        //clear match set
+        MatchesHelper.getMatchInstance().emptyArray();
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

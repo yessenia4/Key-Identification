@@ -24,4 +24,6 @@ public class MatchesHelper {
     public void addToArray(KeyInformation key){
         closestKeys.add(key);
     }
+
+    public void emptyArray() { closestKeys.clear(); }
 }

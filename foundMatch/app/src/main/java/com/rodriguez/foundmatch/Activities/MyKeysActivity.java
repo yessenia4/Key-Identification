@@ -3,6 +3,8 @@ package com.rodriguez.foundmatch.Activities;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +28,6 @@ public class MyKeysActivity extends AppCompatActivity implements View.OnClickLis
     ListView lv;
     private static KeyListAdapter adapter;
     MyDBHandler currentDB;
-    AlertDialog.Builder adb;
     Button deleteBtn;
     Button updateBtn;
 
@@ -68,35 +69,10 @@ public class MyKeysActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.delete_button:
                 deleteBtn.setVisibility(View.GONE);
                 updateBtn.setVisibility(View.GONE);
-
                 lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> a, View v, final int position, long id) {
-                        adb=new AlertDialog.Builder(MyKeysActivity.this);
-                        adb.setTitle("Delete?");
-                        adb.setMessage("Are you sure you want to delete this key?");
-                        //final int positionToRemove = position;
-                        adb.setNegativeButton("Cancel", new AlertDialog.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                deleteBtn.setVisibility(View.VISIBLE);
-                                updateBtn.setVisibility(View.VISIBLE);
-                            }});
-                        adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                //get rid of it in database here
-                                //there is an error when deleting key --> check
-                                if(currentDB.deleteHandler(keylist.get(position).getKeyID()))
-                                    adb.setMessage("Key was deleted.");
-                                else
-                                    adb.setMessage("There was an error when deleting key.");
-                                //reload list loading it from database
-                                keylist = GetlistKey();
-                                //MyDataObject.remove(positionToRemove);
-                                adapter.notifyDataSetChanged();
-
-                                deleteBtn.setVisibility(View.VISIBLE);
-                                updateBtn.setVisibility(View.VISIBLE);
-                            }});
-                        adb.show();
+                        //Toast.makeText(getApplicationContext(),"Item Selected: " + position, Toast.LENGTH_SHORT).show();
+                        createDeleteKeyDialog(position).show();
                     }
                 });
 
@@ -107,15 +83,52 @@ public class MyKeysActivity extends AppCompatActivity implements View.OnClickLis
                 updateBtn.setVisibility(View.GONE);
                 lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> a, View v, final int position, long id) {
-                        Toast.makeText(getApplicationContext(),"Item Selected: " + position, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(),"Item Selected: " + position, Toast.LENGTH_SHORT).show();
                         createEditKeyDialog(position).show();
-                        //need to update list
-                        deleteBtn.setVisibility(View.VISIBLE);
-                        updateBtn.setVisibility(View.VISIBLE);
                     }
                 });
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+
+        //begin again
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    private Dialog createDeleteKeyDialog(final int position){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MyKeysActivity.this);
+
+        //adb=new AlertDialog.Builder(MyKeysActivity.this);
+        builder.setTitle("Delete?");
+        builder.setMessage("Are you sure you want to delete this key?");
+        //final int positionToRemove = position;
+        builder.setNegativeButton("Cancel", new AlertDialog.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                deleteBtn.setVisibility(View.VISIBLE);
+                updateBtn.setVisibility(View.VISIBLE);
+            }});
+        builder.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                //Delete and Check if change was made
+                boolean deleted = currentDB.deleteHandler(keylist.get(position).getKeyID());
+                if (deleted) {
+                    Toast.makeText(MyKeysActivity.this, "DELETED", Toast.LENGTH_LONG).show();
+
+                    //refresh view
+                    Intent intent = new Intent(getApplicationContext(), MyKeysActivity.class);
+                    startActivity(intent);
+                }
+                else
+                    Toast.makeText(MyKeysActivity.this, "ERROR: COULD NOT DELETE", Toast.LENGTH_LONG).show();
+            }});
+
+        return builder.create();
     }
 
     private Dialog createEditKeyDialog(final int position) {
@@ -147,10 +160,15 @@ public class MyKeysActivity extends AppCompatActivity implements View.OnClickLis
                 if(d_text != null)
                     editKey.setKeyDescription(d_text);
 
-                //get rid of it in database here
+                //Edit and Check if change was made
                 boolean isEdited = currentDB.updateHandler(editKey.getKeyID(), editKey);
-                if(isEdited)
+                if(isEdited) {
                     Toast.makeText(MyKeysActivity.this, "CHANGED", Toast.LENGTH_LONG).show();
+
+                    //refresh view
+                    Intent intent = new Intent(getApplicationContext(), MyKeysActivity.class);
+                    startActivity(intent);
+                }
                 else
                     Toast.makeText(MyKeysActivity.this, "ERROR: COULD NOT CHANGE", Toast.LENGTH_LONG).show();
             }

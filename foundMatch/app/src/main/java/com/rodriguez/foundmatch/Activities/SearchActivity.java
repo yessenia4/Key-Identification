@@ -8,7 +8,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rodriguez.foundmatch.DatabaseManagment.MyDBHandler;
 import com.rodriguez.foundmatch.Keys.KeyHelper;
@@ -25,13 +24,11 @@ import java.util.ArrayList;
 
 
 public class SearchActivity extends AppCompatActivity {
+    String distance = "";
     KeyInformation closestKeyMatch;
     KeyInformation closestKeyMatch2;
     KeyInformation closestKeyMatch3;
-    TextView nameView;
-    TextView descView;
     TextView message;
-    ImageView imgView;
     Double[] features;
     Mat image = MatHelper.getInstance().getMat();
 
@@ -58,7 +55,7 @@ public class SearchActivity extends AppCompatActivity {
         //add animation to text
         message = (TextView) findViewById(R.id.text_search);
         //message.setText("Trial 1 - Mat...");
-        if(getFeatures(image, progress))
+        if(getCurrentFeatures(image, progress))
             message.setText("Searching...");
         else
             message.setText("Features NOT Obtained...");
@@ -72,7 +69,7 @@ public class SearchActivity extends AppCompatActivity {
         getNextView();
     }
 
-    public boolean getFeatures(Mat original, int progress){
+    public boolean getCurrentFeatures(Mat original, int progress){
         Mat gray = ImageProcessor.doGray(original);
         Mat binMat = ImageProcessor.doThreshold(gray, progress);
 
@@ -86,10 +83,10 @@ public class SearchActivity extends AppCompatActivity {
         return false;
     }
 
-    public Double GetDistance(Double[] featA, Double[] featB){
-        double dist = 0;
+    public double GetDistance(Double[] featA, Double[] featB){
+        double dist = 0.0;
         for(int i=0; i<featA.length; i++)
-            dist += (featA[i]-featB[i])*(featA[i]-featB[i]);
+            dist += (double) (featA[i] - featB[i]) * (double) (featA[i] - featB[i]);
 
         return Math.sqrt(dist);
     }
@@ -100,18 +97,34 @@ public class SearchActivity extends AppCompatActivity {
 
         if(!dbKeys.isEmpty()) {
             //get three closest keys
-            double shortestDistance = Float.MAX_VALUE;
-            for(int i = 0; i<dbKeys.size(); i++){
+            double shortestDistance1 = Float.MAX_VALUE;
+            double shortestDistance2 = Float.MAX_VALUE;
+            double shortestDistance3 = Float.MAX_VALUE;
+            int size = dbKeys.size();
+
+            for(int i = 0; i<size; i++){
                 Double[] compFeatures = dbKeys.get(i).getFeatures();
-                double currentDistance = GetDistance(features,compFeatures);
-                if(shortestDistance > currentDistance){
+                Double currentDistance = GetDistance(features,compFeatures);
+
+                if(shortestDistance1 > currentDistance && shortestDistance2 > currentDistance && shortestDistance3 > currentDistance){
                     closestKeyMatch3 = closestKeyMatch2;
                     closestKeyMatch2 = closestKeyMatch;
                     closestKeyMatch = dbKeys.get(i);
-                    shortestDistance = currentDistance;
+                    shortestDistance3 = shortestDistance2;
+                    shortestDistance2 = shortestDistance1;
+                    shortestDistance1 = currentDistance;
+                }
+                else if (shortestDistance2 > currentDistance && shortestDistance3 > currentDistance) {
+                        closestKeyMatch3 = closestKeyMatch2;
+                        closestKeyMatch2 = dbKeys.get(i);
+                        shortestDistance3 = shortestDistance2;
+                        shortestDistance2 = currentDistance;
+                }
+                else if (shortestDistance3 > currentDistance) {
+                        closestKeyMatch3 = dbKeys.get(i);
+                        shortestDistance3 = currentDistance;
                 }
             }
-            //Toast.makeText(getApplicationContext(),"Distance: " + shortestDistance, Toast.LENGTH_SHORT).show();
 
             return 1;
         }
@@ -127,6 +140,7 @@ public class SearchActivity extends AppCompatActivity {
         KeyHelper.getInstanceS().setKey(keyMatch);
 
         int result = GetMatch();
+        MatchesHelper.getMatchInstance().emptyArray();
 
         if(result == 1){
             //save closest keyz
@@ -139,7 +153,7 @@ public class SearchActivity extends AppCompatActivity {
                 MatchesHelper.getMatchInstance().addToArray(closestKeyMatch);
                 MatchesHelper.getMatchInstance().addToArray(closestKeyMatch2);
             }
-            else if (dbKeys.size() <= 3) {
+            else if (dbKeys.size() >= 3) {
                 MatchesHelper.getMatchInstance().addToArray(closestKeyMatch);
                 MatchesHelper.getMatchInstance().addToArray(closestKeyMatch2);
                 MatchesHelper.getMatchInstance().addToArray(closestKeyMatch3);
@@ -148,6 +162,7 @@ public class SearchActivity extends AppCompatActivity {
             //then start new instance
             Intent matchIntent = new Intent(this, MatchActivity2.class);
             startActivity(matchIntent);
+
         }
         else if(result == 0){
             //Toast.makeText(getApplicationContext(),"Database is empty...", Toast.LENGTH_SHORT).show();

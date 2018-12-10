@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.rodriguez.foundmatch.Keys.KeyHelper;
 import com.rodriguez.foundmatch.Keys.KeyInformation;
@@ -17,7 +18,6 @@ import com.rodriguez.foundmatch.R;
 import java.util.ArrayList;
 
 public class MatchActivity2 extends AppCompatActivity implements View.OnClickListener{
-    KeyInformation keyObj;
     KeyInformation keyObjM1;
     KeyInformation keyObjM2;
     KeyInformation keyObjM3;
@@ -36,9 +36,6 @@ public class MatchActivity2 extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match2);
-
-        //get info for key being searched in case user wants to add key
-        keyObj = KeyHelper.getInstanceS().getKey();
 
         //get ArrayList of Matches
         ArrayList<KeyInformation> matches = MatchesHelper.getMatchInstance().getArray();
@@ -91,6 +88,8 @@ public class MatchActivity2 extends AppCompatActivity implements View.OnClickLis
             imgView3.setImageBitmap(keyObjM3.getKeyImage());
         }
 
+        //Toast.makeText(getApplicationContext(),"Matches set has..." + matches.size(), Toast.LENGTH_SHORT).show();
+
         addButton = (Button) findViewById(R.id.add_button_close);
         addButton.setOnClickListener(this);
     }
@@ -100,6 +99,8 @@ public class MatchActivity2 extends AppCompatActivity implements View.OnClickLis
         super.onBackPressed();
 
         //begin again
+        //clear match set
+        MatchesHelper.getMatchInstance().emptyArray();
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
